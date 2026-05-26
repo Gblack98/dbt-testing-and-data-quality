@@ -1,0 +1,16 @@
+customer_id,first_name,last_name,email,phone,country,age,income_monthly,created_at,is_active
+C001,Amadou,Diallo,amadou.diallo@email.sn,+221771234567,SN,34,450000,2023-01-15,true
+C002,Fatou,Sow,fatou.sow@email.sn,+221782345678,SN,28,320000,2023-02-20,true
+C003,Moussa,Ndiaye,moussa.ndiaye@email.sn,+221793456789,SN,45,780000,2023-01-08,true
+C004,Aissatou,Ba,aissatou.ba@email.sn,+221774567890,SN,31,250000,2023-03-11,true
+C005,Ibrahim,Kane,ibrahim.kane@email.sn,+221785678901,SN,52,1200000,2023-01-25,true
+C006,Mariama,Sy,mariama.sy@email.sn,+221796789012,SN,27,180000,2023-04-05,false
+C007,Ousmane,Gueye,ousmane.gueye@email.sn,+221777890123,SN,38,560000,2023-02-14,true
+C008,Rokhaya,Toure,rokhaya.toure@email.sn,+221788901234,SN,23,120000,2023-05-19,true
+C009,Cheikh,Mbaye,cheikh.mbaye@email.sn,+221799012345,SN,41,890000,2023-01-30,true
+C010,Ndèye,Fall,ndeye.fall@email.sn,+221770123456,SN,29,340000,2023-03-22,true
+C011,Aliou,Cissé,aliou.cisse@email.sn,,SN,35,670000,2023-06-01,true
+C012,Binta,Camara,binta.camara@email.sn,+221781234560,SN,26,210000,2023-04-17,true
+C013,Seydou,Diop,seydou.diop@email.sn,+221792345671,SN,48,950000,2023-02-28,true
+C014,Coumba,Sarr,coumba.sarr@email.sn,+221773456782,SN,33,380000,2023-05-10,false
+C015,Babacar,Faye,babacar.faye@email.sn,+221784567893,SN,56,1500000,2023-01-05,true
