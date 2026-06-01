@@ -1,0 +1,135 @@
+name: dbt CI — Data Quality Gates
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  dbt-quality-check:
+    name: 🧪 dbt Tests & Quality Gates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 📦 Install dbt + DuckDB adapter
+        run: |
+          pip install dbt-core dbt-duckdb
+
+      - name: 📋 dbt debug (vérification config)
+        run: |
+          cp profiles.yml ~/.dbt/profiles.yml || mkdir -p ~/.dbt && cp profiles.yml ~/.dbt/profiles.yml
+          dbt debug --target ci
+        env:
+          DBT_PROFILES_DIR: .
+
+      - name: 📦 Install dbt packages
+        run: dbt deps
+        env:
+          DBT_PROFILES_DIR: .
+
+      - name: 🌱 Load seed data
+        run: dbt seed --target ci
+        env:
+          DBT_PROFILES_DIR: .
+
+      - name: 🏗️ Run dbt models
+        run: dbt run --target ci
+        env:
+          DBT_PROFILES_DIR: .
+
+      - name: 🧪 Run all tests (quality gate)
+        run: dbt test --target ci --store-failures
+        env:
+          DBT_PROFILES_DIR: .
+
+      - name: 📊 Generate dbt docs
+        if: github.ref == 'refs/heads/main'
+        run: dbt docs generate --target ci
+        env:
+          DBT_PROFILES_DIR: .
+
+      - name: 📤 Upload dbt artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-artifacts
+          path: |
+            target/manifest.json
+            target/run_results.json
+            target/catalog.json
+          retention-days: 30
+
+      - name: ✅ Quality gate summary
+        if: always()
+        run: |
+          echo "## dbt Quality Gate Results" >> $GITHUB_STEP_SUMMARY
+          if [ -f target/run_results.json ]; then
+            python3 -c "
+          import json
+          with open('target/run_results.json') as f:
+              results = json.load(f)
+          total = len(results['results'])
+          passed = sum(1 for r in results['results'] if r['status'] in ['pass', 'success'])
+          failed = total - passed
+          print(f'| Metric | Value |')
+          print(f'|--------|-------|')
+          print(f'| Total  | {total} |')
+          print(f'| ✅ Passed | {passed} |')
+          print(f'| ❌ Failed | {failed} |')
+          " >> $GITHUB_STEP_SUMMARY
+          fi
+
+  slim-ci:
+    name: 🚀 Slim CI (modèles modifiés uniquement)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 📦 Install dbt + DuckDB
+        run: pip install dbt-core dbt-duckdb
+
+      - name: 📦 Install dbt packages
+        run: dbt deps
+        env:
+          DBT_PROFILES_DIR: .
+
+      - name: 🌱 Load seeds
+        run: dbt seed --target ci
+        env:
+          DBT_PROFILES_DIR: .
+
+      - name: 🔍 Slim CI — run only modified models + descendants
+        run: |
+          # Récupère la liste des fichiers modifiés
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep "^models/" | sed 's|models/||;s|\.sql$||' | xargs -I{} echo "+{}+" | tr '\n' ' ')
+          if [ -z "$CHANGED" ]; then
+            echo "Aucun modèle modifié détecté."
+            dbt run --target ci
+          else
+            echo "Modèles modifiés : $CHANGED"
+            dbt run --target ci --select $CHANGED
+            dbt test --target ci --select $CHANGED
+          fi
+        env:
+          DBT_PROFILES_DIR: .

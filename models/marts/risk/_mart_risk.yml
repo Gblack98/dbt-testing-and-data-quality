@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: mart_loan_risk_dashboard
+    description: "Dashboard risque portefeuille — provisions, retards, statuts de paiement"
+    columns:
+      - name: loan_id
+        tests:
+          - unique
+          - not_null
+      - name: provision_rate
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "between 0 and 1"
+      - name: provision_amount_xof
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: payment_status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['current', 'overdue', 'defaulted', 'first_payment_missed']
+      - name: repayment_ratio_pct
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "between 0 and 120"

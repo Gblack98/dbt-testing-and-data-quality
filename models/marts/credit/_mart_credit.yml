@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: mart_customer_credit_profile
+    description: "Profil crédit complet par client — table finale pour BI et scoring ML"
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: credit_score
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "between 300 and 850"
+      - name: risk_category
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['low_risk', 'medium_risk', 'high_risk', 'no_history']
+      - name: total_borrowed_xof
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: total_outstanding_xof
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: debt_to_income_ratio
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+              where: "debt_to_income_ratio is not null"

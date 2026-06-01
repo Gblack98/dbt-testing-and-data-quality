@@ -1,0 +1,15 @@
+dbt_testing_quality:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "dev.duckdb"
+      threads: 4
+    ci:
+      type: duckdb
+      path: ":memory:"
+      threads: 2
+    prod:
+      type: duckdb
+      path: "prod.duckdb"
+      threads: 8

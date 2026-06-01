@@ -1,0 +1,46 @@
+name: 'dbt_testing_quality'
+version: '1.0.0'
+config-version: 2
+
+profile: 'dbt_testing_quality'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+docs-paths: ["docs"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  # Seuils de qualité des données
+  max_null_ratio: 0.05           # 5% de nulls max
+  min_row_count: 100             # Minimum de lignes attendues
+  max_freshness_hours: 24        # Fraîcheur max en heures
+  anomaly_threshold: 3.0         # Écart-type pour détecter anomalies
+
+models:
+  dbt_testing_quality:
+    staging:
+      +materialized: view
+      +tags: ["staging"]
+    intermediate:
+      +materialized: table
+      +tags: ["intermediate"]
+    marts:
+      credit:
+        +materialized: table
+        +tags: ["marts", "credit"]
+      risk:
+        +materialized: table
+        +tags: ["marts", "risk"]
+
+seeds:
+  dbt_testing_quality:
+    +schema: raw
+    +quote_columns: false

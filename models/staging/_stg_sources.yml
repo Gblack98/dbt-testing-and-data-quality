@@ -1,0 +1,126 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: "Données brutes chargées depuis les seeds CSV"
+    tables:
+      - name: raw_customers
+        description: "Table clients brute"
+        columns:
+          - name: customer_id
+            description: "Identifiant unique client"
+            tests:
+              - unique
+              - not_null
+          - name: email
+            description: "Email du client"
+            tests:
+              - not_null
+          - name: income_monthly
+            description: "Revenu mensuel en XOF"
+            tests:
+              - not_null
+              - dbt_utils.expression_is_true:
+                  expression: ">= 0"
+
+      - name: raw_loans
+        description: "Table prêts brute"
+        columns:
+          - name: loan_id
+            tests:
+              - unique
+              - not_null
+          - name: loan_amount
+            tests:
+              - not_null
+              - dbt_utils.expression_is_true:
+                  expression: "> 0"
+          - name: status
+            tests:
+              - accepted_values:
+                  values: ['active', 'repaid', 'defaulted', 'pending']
+
+      - name: raw_transactions
+        description: "Table transactions brute"
+        columns:
+          - name: transaction_id
+            tests:
+              - unique
+              - not_null
+          - name: status
+            tests:
+              - accepted_values:
+                  values: ['success', 'failed', 'pending']
+
+models:
+  - name: stg_customers
+    description: "Clients nettoyés et standardisés"
+    columns:
+      - name: customer_id
+        description: "Identifiant unique client"
+        tests:
+          - unique
+          - not_null
+      - name: email
+        tests:
+          - unique
+          - not_null
+      - name: income_monthly_xof
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: income_segment
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['low', 'medium', 'high', 'very_high']
+      - name: age
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "between 18 and 100"
+
+  - name: stg_loans
+    description: "Prêts nettoyés et enrichis"
+    columns:
+      - name: loan_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+      - name: loan_amount_xof
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
+      - name: loan_status
+        tests:
+          - accepted_values:
+              values: ['active', 'repaid', 'defaulted', 'pending']
+      - name: interest_rate_pct
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "between 0 and 100"
+
+  - name: stg_transactions
+    description: "Transactions nettoyées"
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+          - not_null
+      - name: amount_xof
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
+      - name: transaction_status
+        tests:
+          - accepted_values:
+              values: ['success', 'failed', 'pending']
