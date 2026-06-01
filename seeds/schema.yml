@@ -1,0 +1,43 @@
+version: 2
+
+seeds:
+  - name: raw_customers
+    config:
+      column_types:
+        customer_id: varchar
+        first_name: varchar
+        last_name: varchar
+        email: varchar
+        phone: varchar
+        country: varchar
+        age: integer
+        income_monthly: bigint
+        created_at: date
+        is_active: boolean
+
+  - name: raw_loans
+    config:
+      column_types:
+        loan_id: varchar
+        customer_id: varchar
+        loan_amount: double
+        interest_rate: double
+        term_months: integer
+        loan_type: varchar
+        status: varchar
+        disbursement_date: date
+        due_date: date
+        created_at: date
+
+  - name: raw_transactions
+    config:
+      column_types:
+        transaction_id: varchar
+        loan_id: varchar
+        customer_id: varchar
+        amount: double
+        transaction_type: varchar
+        channel: varchar
+        status: varchar
+        transaction_date: date
+        created_at: date

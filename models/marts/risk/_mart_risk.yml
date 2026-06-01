@@ -5,24 +5,24 @@ models:
     description: "Dashboard risque portefeuille — provisions, retards, statuts de paiement"
     columns:
       - name: loan_id
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: provision_rate
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.expression_is_true:
               expression: "between 0 and 1"
       - name: provision_amount_xof
-        tests:
+        data_tests:
           - dbt_utils.expression_is_true:
               expression: ">= 0"
       - name: payment_status
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               values: ['current', 'overdue', 'defaulted', 'first_payment_missed']
       - name: repayment_ratio_pct
-        tests:
+        data_tests:
           - dbt_utils.expression_is_true:
               expression: "between 0 and 120"
