@@ -1,5 +1,5 @@
 -- generate_surrogate_key.sql
--- Macro pour générer une clé de substitution MD5 à partir de plusieurs colonnes
+-- Macro to generate an MD5 surrogate key from multiple columns
 
 {% macro generate_surrogate_key(columns) %}
     md5(

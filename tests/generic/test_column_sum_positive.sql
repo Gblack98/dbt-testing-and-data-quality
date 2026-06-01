@@ -1,6 +1,6 @@
 -- test_column_sum_positive.sql
--- Test générique : vérifie que la somme d'une colonne est positive
--- Utile pour valider les montants financiers agrégés
+-- Generic test: checks that the sum of a column is positive
+-- Useful for validating aggregated financial amounts
 
 {% test column_sum_positive(model, column_name) %}
 

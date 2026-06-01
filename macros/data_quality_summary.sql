@@ -1,6 +1,6 @@
 -- data_quality_summary.sql
--- Macro qui génère un résumé de qualité des données pour une table
--- Usage : {{ data_quality_summary(ref('ma_table'), ['col1', 'col2']) }}
+-- Macro that generates a data quality summary for a given table
+-- Usage: {{ data_quality_summary(ref('my_table'), ['col1', 'col2']) }}
 
 {% macro data_quality_summary(model, columns) %}
 

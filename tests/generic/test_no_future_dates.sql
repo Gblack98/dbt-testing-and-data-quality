@@ -1,6 +1,6 @@
 -- test_no_future_dates.sql
--- Test générique : vérifie qu'aucune date n'est dans le futur
--- Usage :
+-- Generic test: checks that no date is in the future
+-- Usage:
 --   tests:
 --     - no_future_dates
 

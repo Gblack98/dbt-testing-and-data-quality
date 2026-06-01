@@ -1,7 +1,7 @@
 -- data_quality_report.sql
--- Analyse ad-hoc : rapport de qualité globale du portefeuille
+-- Ad-hoc analysis: overall portfolio data quality report
 
--- 1. Vue d'ensemble des prêts
+-- 1. Loan portfolio overview
 select
     loan_status,
     count(*)                            as nb_loans,
@@ -13,17 +13,17 @@ from {{ ref('int_loan_payments') }}
 group by loan_status
 order by nb_loans desc;
 
--- 2. Répartition des risques clients
+-- 2. Customer risk distribution
 select
     risk_category,
-    count(*)                            as nb_clients,
+    count(*)                            as nb_customers,
     avg(credit_score)                   as avg_credit_score,
     sum(total_outstanding_xof)          as total_exposure_xof
 from {{ ref('mart_customer_credit_profile') }}
 group by risk_category
 order by total_exposure_xof desc;
 
--- 3. Provisions par type de prêt
+-- 3. Provisions by loan type
 select
     loan_type,
     payment_status,

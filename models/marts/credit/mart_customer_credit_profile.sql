@@ -1,5 +1,5 @@
 -- mart_customer_credit_profile.sql
--- Profil crédit complet par client (table finale pour BI / scoring)
+-- Full credit profile per customer (final table for BI / ML scoring)
 
 with customers as (
     select * from {{ ref('stg_customers') }}
@@ -40,7 +40,7 @@ final as (
         c.customer_since,
         c.is_active,
 
-        -- Métriques de prêts
+        -- Loan metrics
         coalesce(cl.total_loans, 0)                         as total_loans,
         coalesce(cl.active_loans, 0)                        as active_loans,
         coalesce(cl.repaid_loans, 0)                        as repaid_loans,
@@ -53,7 +53,7 @@ final as (
         coalesce(cl.total_failed_payments, 0)               as total_failed_payments,
         cl.last_payment_date,
 
-        -- Ratio dette/revenu (DTI)
+        -- Debt-to-income ratio (DTI)
         case
             when c.income_monthly_xof > 0
             then round(
@@ -63,7 +63,7 @@ final as (
             else null
         end                                                 as debt_to_income_ratio,
 
-        -- Catégorie de risque
+        -- Risk category
         case
             when coalesce(cl.defaulted_loans, 0) > 0          then 'high_risk'
             when coalesce(cl.avg_payment_score, 100) < 70     then 'medium_risk'
@@ -71,7 +71,7 @@ final as (
             else 'low_risk'
         end                                                 as risk_category,
 
-        -- Score crédit simplifié (300-850)
+        -- Simplified credit score (300-850)
         least(850, greatest(300,
             300
             + (coalesce(cl.avg_payment_score, 50) * 2)

@@ -1,5 +1,5 @@
 -- mart_loan_risk_dashboard.sql
--- Dashboard de risque par portefeuille de prêts
+-- Loan portfolio risk dashboard
 
 with loan_payments as (
     select * from {{ ref('int_loan_payments') }}
@@ -34,14 +34,14 @@ final as (
         c.country_code,
         c.risk_category,
 
-        -- Jours depuis le dernier paiement
+        -- Days since last payment
         case
             when lp.last_payment_date is not null
             then current_date - lp.last_payment_date
             else null
         end                                                 as days_since_last_payment,
 
-        -- Statut de retard
+        -- Payment status
         case
             when lp.loan_status = 'defaulted'               then 'defaulted'
             when lp.loan_status = 'repaid'                  then 'current'
@@ -51,7 +51,7 @@ final as (
             else 'current'
         end                                                 as payment_status,
 
-        -- Niveau de provision (% à provisionner selon le risque)
+        -- Provision rate (% to provision based on risk)
         case
             when lp.loan_status = 'defaulted'              then 1.00
             when current_date > lp.due_date                then 0.50
@@ -60,7 +60,7 @@ final as (
             else 0.00
         end                                                 as provision_rate,
 
-        -- Montant à provisionner
+        -- Provision amount
         round(
             lp.outstanding_balance_xof * case
                 when lp.loan_status = 'defaulted'          then 1.00

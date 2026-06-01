@@ -3,29 +3,29 @@ version: 2
 sources:
   - name: raw
     schema: main_raw
-    description: "Données brutes chargées depuis les seeds CSV"
+    description: "Raw data loaded from CSV seeds"
     tables:
       - name: raw_customers
-        description: "Table clients brute"
+        description: "Raw customer table"
         columns:
           - name: customer_id
-            description: "Identifiant unique client"
+            description: "Unique customer identifier"
             data_tests:
               - unique
               - not_null
           - name: email
-            description: "Email du client"
+            description: "Customer email address"
             data_tests:
               - not_null
           - name: income_monthly
-            description: "Revenu mensuel en XOF"
+            description: "Monthly income in XOF"
             data_tests:
               - not_null
               - dbt_utils.expression_is_true:
                   expression: ">= 0"
 
       - name: raw_loans
-        description: "Table prêts brute"
+        description: "Raw loan table"
         columns:
           - name: loan_id
             data_tests:
@@ -42,7 +42,7 @@ sources:
                   values: ['active', 'repaid', 'defaulted', 'pending']
 
       - name: raw_transactions
-        description: "Table transactions brute"
+        description: "Raw transaction table"
         columns:
           - name: transaction_id
             data_tests:
@@ -55,10 +55,10 @@ sources:
 
 models:
   - name: stg_customers
-    description: "Clients nettoyés et standardisés"
+    description: "Cleaned and standardized customer data"
     columns:
       - name: customer_id
-        description: "Identifiant unique client"
+        description: "Unique customer identifier"
         data_tests:
           - unique
           - not_null
@@ -82,7 +82,7 @@ models:
               expression: "between 18 and 100"
 
   - name: stg_loans
-    description: "Prêts nettoyés et enrichis"
+    description: "Cleaned and enriched loan data"
     columns:
       - name: loan_id
         data_tests:
@@ -109,7 +109,7 @@ models:
               expression: "between 0 and 100"
 
   - name: stg_transactions
-    description: "Transactions nettoyées"
+    description: "Cleaned transaction data"
     columns:
       - name: transaction_id
         data_tests:

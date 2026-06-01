@@ -1,5 +1,5 @@
 -- stg_customers.sql
--- Nettoyage et standardisation des données clients brutes
+-- Clean and standardize raw customer data
 
 with source as (
     select * from {{ ref('raw_customers') }}

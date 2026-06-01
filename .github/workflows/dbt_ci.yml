@@ -25,7 +25,7 @@ jobs:
         run: |
           pip install dbt-core dbt-duckdb
 
-      - name: 📋 dbt debug (vérification config)
+      - name: 📋 dbt debug (config check)
         run: |
           cp profiles.yml ~/.dbt/profiles.yml || mkdir -p ~/.dbt && cp profiles.yml ~/.dbt/profiles.yml
           dbt debug --target ci
@@ -90,7 +90,7 @@ jobs:
           fi
 
   slim-ci:
-    name: 🚀 Slim CI (modèles modifiés uniquement)
+    name: 🚀 Slim CI (modified models only)
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
 
@@ -121,13 +121,12 @@ jobs:
 
       - name: 🔍 Slim CI — run only modified models + descendants
         run: |
-          # Récupère la liste des fichiers modifiés
           CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep "^models/" | sed 's|models/||;s|\.sql$||' | xargs -I{} echo "+{}+" | tr '\n' ' ')
           if [ -z "$CHANGED" ]; then
-            echo "Aucun modèle modifié détecté."
+            echo "No modified models detected — running full suite."
             dbt run --target ci
           else
-            echo "Modèles modifiés : $CHANGED"
+            echo "Modified models: $CHANGED"
             dbt run --target ci --select $CHANGED
             dbt test --target ci --select $CHANGED
           fi

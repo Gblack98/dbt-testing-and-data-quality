@@ -1,5 +1,5 @@
 -- int_loan_payments.sql
--- Agrégation des paiements par prêt
+-- Aggregate payment data per loan
 
 with transactions as (
     select * from {{ ref('stg_transactions') }}
@@ -43,16 +43,16 @@ enriched as (
         coalesce(p.total_transactions, 0)                               as total_transactions,
         p.last_payment_date,
         p.first_payment_date,
-        -- Montant restant dû
+        -- Outstanding balance
         greatest(l.total_amount_due_xof - coalesce(p.total_paid_xof, 0), 0)
                                                                         as outstanding_balance_xof,
-        -- Ratio de remboursement
+        -- Repayment ratio
         case
             when l.total_amount_due_xof > 0
             then round(coalesce(p.total_paid_xof, 0) / l.total_amount_due_xof * 100, 2)
             else 0
         end                                                             as repayment_ratio_pct,
-        -- Score de fiabilité de paiement (0-100)
+        -- Payment reliability score (0-100)
         case
             when coalesce(p.total_transactions, 0) = 0 then 50
             else round(

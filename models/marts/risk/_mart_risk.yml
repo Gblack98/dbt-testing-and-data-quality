@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: mart_loan_risk_dashboard
-    description: "Dashboard risque portefeuille — provisions, retards, statuts de paiement"
+    description: "Loan portfolio risk dashboard — provisions, delinquency, payment status"
     columns:
       - name: loan_id
         data_tests:

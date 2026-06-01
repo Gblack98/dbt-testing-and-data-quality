@@ -18,11 +18,11 @@ clean-targets:
   - "dbt_packages"
 
 vars:
-  # Seuils de qualité des données
-  max_null_ratio: 0.05           # 5% de nulls max
-  min_row_count: 100             # Minimum de lignes attendues
-  max_freshness_hours: 24        # Fraîcheur max en heures
-  anomaly_threshold: 3.0         # Écart-type pour détecter anomalies
+  # Data quality thresholds
+  max_null_ratio: 0.05           # Max 5% nulls allowed
+  min_row_count: 100             # Minimum expected row count
+  max_freshness_hours: 24        # Max data freshness in hours
+  anomaly_threshold: 3.0         # Standard deviations for anomaly detection
 
 models:
   dbt_testing_quality:

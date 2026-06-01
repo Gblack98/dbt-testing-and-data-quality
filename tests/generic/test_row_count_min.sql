@@ -1,6 +1,6 @@
 -- test_row_count_min.sql
--- Test générique : vérifie qu'une table a au moins N lignes
--- Usage :
+-- Generic test: checks that a table has at least N rows
+-- Usage:
 --   tests:
 --     - row_count_min:
 --         min_rows: 100

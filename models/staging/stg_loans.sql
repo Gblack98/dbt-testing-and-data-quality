@@ -1,5 +1,5 @@
 -- stg_loans.sql
--- Nettoyage et standardisation des prêts
+-- Clean and standardize raw loan data
 
 with source as (
     select * from {{ ref('raw_loans') }}
@@ -17,12 +17,12 @@ cleaned as (
         cast(disbursement_date as date)                 as disbursement_date,
         cast(due_date as date)                          as due_date,
         cast(created_at as date)                        as created_at,
-        -- Calcul du montant total dû avec intérêts (formule simple)
+        -- Total amount due including interest (simple formula)
         round(
             loan_amount * (1 + (interest_rate / 100) * term_months / 12),
             2
         )::decimal(15,2)                                as total_amount_due_xof,
-        -- Mensualité estimée
+        -- Estimated monthly installment
         round(
             loan_amount * (1 + (interest_rate / 100) * term_months / 12) / term_months,
             2

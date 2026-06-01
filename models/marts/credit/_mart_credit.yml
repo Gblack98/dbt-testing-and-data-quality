@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: mart_customer_credit_profile
-    description: "Profil crédit complet par client — table finale pour BI et scoring ML"
+    description: "Full credit profile per customer — final table for BI and ML scoring"
     columns:
       - name: customer_id
         data_tests:

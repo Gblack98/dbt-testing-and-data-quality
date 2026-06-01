@@ -1,9 +1,9 @@
 -- test_not_null_ratio.sql
--- Test générique : vérifie que le ratio de nulls ne dépasse pas un seuil
--- Usage dans schema.yml :
+-- Generic test: checks that the null ratio does not exceed a threshold
+-- Usage in schema.yml:
 --   tests:
 --     - not_null_ratio:
---         max_ratio: 0.05   # max 5% de nulls
+--         max_ratio: 0.05   # max 5% nulls allowed
 
 {% test not_null_ratio(model, column_name, max_ratio=0.05) %}
 

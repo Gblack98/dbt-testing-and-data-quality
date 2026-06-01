@@ -1,5 +1,5 @@
 -- stg_transactions.sql
--- Nettoyage et standardisation des transactions
+-- Clean and standardize raw transaction data
 
 with source as (
     select * from {{ ref('raw_transactions') }}
@@ -16,12 +16,12 @@ cleaned as (
         lower(status)                                   as transaction_status,
         cast(transaction_date as date)                  as transaction_date,
         cast(created_at as date)                        as created_at,
-        -- Flag transactions suspectes (montant anormal)
+        -- Flag high-value transactions
         case
             when amount > 5000000 then true
             else false
         end                                             as is_high_value,
-        -- Flag transactions échouées
+        -- Flag failed transactions
         case
             when lower(status) = 'failed' then true
             else false

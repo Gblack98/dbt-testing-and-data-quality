@@ -1,6 +1,6 @@
 -- assert_no_defaulted_active_loans.sql
--- Test singulier : un prêt ne peut pas être à la fois 'active' ET avoir
--- un repayment_ratio > 100% (surpaiement incohérent)
+-- Singular test: an active loan cannot have a repayment_ratio > 100%
+-- (overpayment would indicate inconsistent data)
 
 select
     loan_id,

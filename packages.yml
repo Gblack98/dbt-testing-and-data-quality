@@ -8,5 +8,7 @@ packages:
   - package: calogica/dbt_expectations
     version: [">=0.10.0", "<1.0.0"]
 
-  # elementary-data/elementary: incompatible avec DuckDB local (syntaxe SQL)
-  # À activer avec un warehouse cloud (Snowflake, BigQuery, Redshift)
+  # elementary-data/elementary: incompatible with local DuckDB (SQL syntax issue)
+  # Enable when using a cloud warehouse (Snowflake, BigQuery, Redshift)
+  # - package: elementary-data/elementary
+  #   version: [">=0.14.0", "<1.0.0"]

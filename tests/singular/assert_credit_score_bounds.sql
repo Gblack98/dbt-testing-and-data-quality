@@ -1,5 +1,5 @@
 -- assert_credit_score_bounds.sql
--- Test singulier : tous les credit scores doivent être entre 300 et 850
+-- Singular test: all credit scores must be between 300 and 850
 
 select
     customer_id,
