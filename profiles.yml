@@ -7,7 +7,7 @@ dbt_testing_quality:
       threads: 4
     ci:
       type: duckdb
-      path: ":memory:"
+      path: "ci.duckdb"
       threads: 2
     prod:
       type: duckdb
